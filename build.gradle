@@ -18,7 +18,7 @@ repositories {
 }
 
 configurations {
-    all {
+    configureEach {
         resolutionStrategy.eachDependency { DependencyResolveDetails details->
             if (details.requested.group == 'org.seleniumhq.selenium') {
                 details.useVersion('4.19.1')
@@ -38,7 +38,12 @@ dependencies {
     implementation("org.grails:grails-plugin-services")
     implementation("org.grails:grails-plugin-url-mappings")
     implementation("org.grails:grails-web-boot")
+
+    //  Provides transitive vulnerable dependency maven:ch.qos.logback:logback-classic:1.2.12 CVE-2023-6378 7.5 Deserialization of Untrusted Data vulnerability with High severity found  Results powered by Checkmarx(c)
     implementation("org.grails.plugins:cache:7.0.0")
+    implementation("ch.qos.logback:logback-core:1.2.13")
+    implementation("ch.qos.logback:logback-classic:1.2.13")
+
     implementation("org.grails.plugins:gsp")
     implementation("org.grails.plugins:hibernate5")
     implementation("org.grails.plugins:scaffolding")
@@ -75,7 +80,7 @@ java {
     sourceCompatibility = JavaVersion.toVersion("17")
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
     systemProperty "geb.env", System.getProperty('geb.env')
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
